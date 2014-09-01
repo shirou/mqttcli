@@ -42,8 +42,9 @@ func (m *MQTTClient) Publish(topic string, payload []byte, qos int, retain bool)
 }
 
 func onMessageReceived(client *MQTT.MqttClient, message MQTT.Message) {
-	fmt.Print(string(message.Payload()))
+	fmt.Println(string(message.Payload()))
 }
+
 func (m *MQTTClient) Subscribe(topic string, qos int) error {
 	topicFilter, err := MQTT.NewTopicFilter(topic, byte(qos))
 	if err != nil {
