@@ -1,21 +1,25 @@
 mqttcli -- MQTT Client for shell scripting
 =================================================
 
-mqttcli is an MQTT Client which has almost same options with
+mqttcli is an MQTT 3.1.1 Client which has almost same options with
 mosquitto_pub/sub. However, it has additional functionallity and a
 pubsub command which is suite for the shell script pipelining.
 
-Requirement
-==============
-
-- golang
 
 Install
 ==============
 
+Download from here. Please choose your artitecture.
+
+https://drone.io/github.com/shirou/mqttcli/files
+
+
+Or if you have golang environment.
+
 ::
 
   go get github.com/shirou/mqttcli
+
 
 Usage
 ==============
@@ -77,10 +81,5 @@ paho.mqtt.golang.git
 License
 ===========
 
-Eclipse Public License - v 1.0
-
-
-
-
-
+Eclipse Public License - v 1.0 (same as Paho's)
 
