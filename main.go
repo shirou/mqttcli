@@ -33,82 +33,6 @@ func connect(c *cli.Context, opts *MQTT.ClientOptions) (*MQTTClient, error) {
 	return client, nil
 }
 
-func publish(c *cli.Context) {
-	if c.Bool("d") {
-		log.SetLevel(log.DebugLevel)
-	}
-
-	opts := NewOption(c)
-
-	willPayload := c.String("will-payload")
-	willQoS := c.Int("will-qos")
-	willRetain := c.Bool("will-retain")
-	willTopic := c.String("will-topic")
-	if willPayload != "" && willTopic != "" {
-		opts.SetWill(willTopic, willPayload, MQTT.QoS(willQoS), willRetain)
-	}
-
-	client, err := connect(c, opts)
-	if err != nil {
-		log.Error(err)
-		os.Exit(1)
-	}
-
-	qos := c.Int("q")
-	topic := c.String("t")
-	if topic == "" {
-		log.Errorf("Please specify topic")
-		os.Exit(1)
-	}
-	log.Infof("Topic: %s", topic)
-
-	retain := c.Bool("r")
-
-	if c.Bool("s") {
-		// Read from Stdin
-		scanner := bufio.NewScanner(os.Stdin)
-		for scanner.Scan() {
-			err = client.Publish(topic, []byte(scanner.Text()), qos, retain)
-			if err != nil {
-				log.Error(err)
-			}
-
-		}
-	} else {
-		payload := c.String("m")
-		err = client.Publish(topic, []byte(payload), qos, retain)
-		if err != nil {
-			log.Error(err)
-		}
-
-	}
-	log.Info("Published")
-}
-func subscribe(c *cli.Context) {
-	if c.Bool("d") {
-		log.SetLevel(log.DebugLevel)
-	}
-	opts := NewOption(c)
-	client, err := connect(c, opts)
-	if err != nil {
-		log.Error(err)
-		os.Exit(1)
-	}
-
-	qos := c.Int("q")
-	topic := c.String("t")
-	if topic == "" {
-		log.Errorf("Please specify topic")
-		os.Exit(1)
-	}
-	log.Infof("Topic: %s", topic)
-
-	err = client.Subscribe(topic, qos)
-	if err != nil {
-		log.Error(err)
-	}
-}
-
 func pubsub(c *cli.Context) {
 	if c.Bool("d") {
 		log.SetLevel(log.DebugLevel)
@@ -136,17 +60,17 @@ func pubsub(c *cli.Context) {
 	retain := c.Bool("r")
 
 	go func() {
-		// Read from Stdin
+		// Read from Stdin and publish
 		scanner := bufio.NewScanner(os.Stdin)
 		for scanner.Scan() {
 			err = client.Publish(pubtopic, []byte(scanner.Text()), qos, retain)
 			if err != nil {
 				log.Error(err)
 			}
-
 		}
 	}()
 
+	// Subscribe and print to stdout
 	err = client.Subscribe(subtopic, qos)
 	if err != nil {
 		log.Error(err)
@@ -214,7 +138,12 @@ func main() {
 			Usage: "the topic on which to publish the client Will",
 		},
 	)
-	subFlags := commonFlags
+	subFlags := append(commonFlags,
+		cli.BoolFlag{
+			Name:  "c",
+			Usage: "disable 'clean session'",
+		},
+	)
 	pubsubFlags := append(commonFlags,
 		cli.StringFlag{
 			Name:  "pub",

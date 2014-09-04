@@ -34,7 +34,6 @@ func (m *MQTTClient) Publish(topic string, payload []byte, qos int, retain bool)
 	mqttmsg.SetQoS(MQTT.QoS(qos))
 	mqttmsg.SetRetainedFlag(retain)
 
-	//      receipt := m.Client.PublishMessage(msg.Destination, mqttmsg)
 	receipt := m.Client.PublishMessage(topic, mqttmsg)
 	<-receipt
 
@@ -81,14 +80,6 @@ func NewOption(c *cli.Context) *MQTT.ClientOptions {
 		clientId = getRandomClientId()
 	}
 	opts.SetClientId(clientId)
-	user := c.String("u")
-	if user != "" {
-		opts.SetUsername(user)
-	}
-	password := c.String("P")
-	if password != "" {
-		opts.SetPassword(password)
-	}
 
 	cafile := c.String("cafile")
 	scheme := "tcp"
@@ -99,6 +90,15 @@ func NewOption(c *cli.Context) *MQTT.ClientOptions {
 	if insecure {
 		tlsConfig := &tls.Config{InsecureSkipVerify: true}
 		opts.SetTlsConfig(tlsConfig)
+	}
+
+	user := c.String("u")
+	if user != "" {
+		opts.SetUsername(user)
+	}
+	password := c.String("P")
+	if password != "" {
+		opts.SetPassword(password)
 	}
 
 	host := c.String("host")
