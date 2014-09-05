@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"os"
 
-	MQTT "git.eclipse.org/gitroot/paho/org.eclipse.paho.mqtt.golang.git"
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
 )
@@ -15,15 +14,6 @@ func publish(c *cli.Context) {
 	}
 
 	opts := NewOption(c)
-
-	willPayload := c.String("will-payload")
-	willQoS := c.Int("will-qos")
-	willRetain := c.Bool("will-retain")
-	willTopic := c.String("will-topic")
-	if willPayload != "" && willTopic != "" {
-		opts.SetWill(willTopic, willPayload, MQTT.QoS(willQoS), willRetain)
-	}
-
 	client, err := connect(c, opts)
 	if err != nil {
 		log.Error(err)

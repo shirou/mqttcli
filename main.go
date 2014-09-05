@@ -23,6 +23,14 @@ func initFunc() {
 func connect(c *cli.Context, opts *MQTT.ClientOptions) (*MQTTClient, error) {
 	log.Info("Connecting...")
 
+	willPayload := c.String("will-payload")
+	willQoS := c.Int("will-qos")
+	willRetain := c.Bool("will-retain")
+	willTopic := c.String("will-topic")
+	if willPayload != "" && willTopic != "" {
+		opts.SetWill(willTopic, willPayload, MQTT.QoS(willQoS), willRetain)
+	}
+
 	client := &MQTTClient{Opts: opts}
 	_, err := client.Connect()
 	if err != nil {
@@ -115,9 +123,6 @@ func main() {
 		cli.BoolFlag{"d", "enable debug messages", ""},
 		cli.BoolFlag{"insecure", "do not check that the server certificate", ""},
 		cli.StringFlag{"conf", "~/.mqtt.cfg", "config file path", ""},
-	}
-	pubFlags := append(commonFlags,
-		cli.BoolFlag{"s", "read message from stdin, sending line by line as a message", ""},
 		cli.StringFlag{
 			Name:  "will-payload",
 			Value: "",
@@ -137,6 +142,9 @@ func main() {
 			Value: "",
 			Usage: "the topic on which to publish the client Will",
 		},
+	}
+	pubFlags := append(commonFlags,
+		cli.BoolFlag{"s", "read message from stdin, sending line by line as a message", ""},
 	)
 	subFlags := append(commonFlags,
 		cli.BoolFlag{
