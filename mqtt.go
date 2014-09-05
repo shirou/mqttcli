@@ -75,6 +75,8 @@ func getRandomClientId() string {
 func NewOption(c *cli.Context) *MQTT.ClientOptions {
 	opts := MQTT.NewClientOptions()
 
+	getSettingsFromFile(c.String("conf"), opts)
+
 	clientId := c.String("i")
 	if clientId == "" {
 		clientId = getRandomClientId()
@@ -103,10 +105,11 @@ func NewOption(c *cli.Context) *MQTT.ClientOptions {
 
 	host := c.String("host")
 	port := c.Int("p")
+	if host != "" {
+		brokerUri := fmt.Sprintf("%s://%s:%d", scheme, host, port)
+		log.Info("Broker URI: %s", brokerUri)
 
-	brokerUri := fmt.Sprintf("%s://%s:%d", scheme, host, port)
-	log.Info("Broker URI: %s", brokerUri)
-
-	opts.AddBroker(brokerUri)
+		opts.AddBroker(brokerUri)
+	}
 	return opts
 }

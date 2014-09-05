@@ -88,7 +88,7 @@ func main() {
 	commonFlags := []cli.Flag{
 		cli.StringFlag{
 			Name:   "host",
-			Value:  "localhost",
+			Value:  "",
 			Usage:  "mqtt host to connect to. Defaults to localhost",
 			EnvVar: "MQTT_HOST"},
 		cli.IntFlag{
@@ -114,7 +114,7 @@ func main() {
 		cli.BoolFlag{"r", "message should be retained.", ""},
 		cli.BoolFlag{"d", "enable debug messages", ""},
 		cli.BoolFlag{"insecure", "do not check that the server certificate", ""},
-		//		cli.StringFlag{"conf", "~/.mqtt.cfg", "config file", ""},
+		cli.StringFlag{"conf", "~/.mqtt.cfg", "config file path", ""},
 	}
 	pubFlags := append(commonFlags,
 		cli.BoolFlag{"s", "read message from stdin, sending line by line as a message", ""},
