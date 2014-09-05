@@ -5,7 +5,6 @@ mqttcli is an MQTT 3.1.1 Client which has almost same options with
 mosquitto_pub/sub. However, it has additional functionallity and a
 pubsub command which is suite for the shell script pipelining.
 
-
 Install
 ==============
 
@@ -37,6 +36,12 @@ You can set host, port, username and password on the Environment.
 
 or using this config file. You can specifiy config file using
 ``--conf`` option, or place ``~/.mqttcli.cfg``.
+
+::
+
+  % mqttcli sub --conf settings.json  -t "some/topic"
+
+example:
 
 ::
 
