@@ -9,11 +9,9 @@ pubsub command which is suite for the shell script pipelining.
 Install
 ==============
 
-Download from here. Please choose your artitecture. (and chmod ugo+x
-if needed)
+Download from here. Please choose your artitecture. (and chmod ugo+x if needed)
 
 https://drone.io/github.com/shirou/mqttcli/files
-
 
 Or if you have golang environment.
 
@@ -48,7 +46,6 @@ or using this config file. You can specifiy config file using
      "username": "user,
      "password": "blahblah"
    }
-
 
 
 Pub
