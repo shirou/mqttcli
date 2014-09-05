@@ -41,6 +41,7 @@ func (m *MQTTClient) Publish(topic string, payload []byte, qos int, retain bool)
 }
 
 func onMessageReceived(client *MQTT.MqttClient, message MQTT.Message) {
+	log.Infof("topic:%s  / msg:%s", message.Topic(), message.Payload())
 	fmt.Println(string(message.Payload()))
 }
 
