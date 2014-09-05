@@ -37,6 +37,19 @@ You can set host, port, username and password on the Environment.
     export MQTT_USERNAME="user"
     export MQTT_PASSWORD="blahblah"
 
+or using this config file. You can specifiy config file using
+``--conf`` option, or place ``~/.mqttcli.cfg``.
+
+::
+
+   {
+     "host": "localhost",
+     "port": "1883",
+     "username": "user,
+     "password": "blahblah"
+   }
+
+
 
 Pub
 -------
@@ -61,6 +74,8 @@ Sub
 
 PubSub
 ---------
+
+Note: This subcommand is just a concept work. Might be delete in the future.
 
 Publish from stdin AND Subscribe from some topics and print stdout.
 
