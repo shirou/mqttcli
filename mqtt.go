@@ -108,7 +108,7 @@ func NewOption(c *cli.Context) *MQTT.ClientOptions {
 	port := c.Int("p")
 	if host != "" {
 		brokerUri := fmt.Sprintf("%s://%s:%d", scheme, host, port)
-		log.Info("Broker URI: %s", brokerUri)
+		log.Infof("Broker URI: %s", brokerUri)
 
 		opts.AddBroker(brokerUri)
 	}
