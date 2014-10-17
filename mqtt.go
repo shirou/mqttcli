@@ -79,7 +79,7 @@ func NewOption(c *cli.Context) *MQTT.ClientOptions {
 	host := c.String("host")
 	port := c.Int("p")
 
-	if host == "" && port == 0 {
+	if host == "" {
 		getSettingsFromFile(c.String("conf"), opts)
 	}
 
