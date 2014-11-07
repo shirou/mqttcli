@@ -126,7 +126,7 @@ func main() {
 		cli.BoolFlag{"r", "message should be retained.", ""},
 		cli.BoolFlag{"d", "enable debug messages", ""},
 		cli.BoolFlag{"insecure", "do not check that the server certificate", ""},
-		cli.StringFlag{"conf", "~/.mqtt.cfg", "config file path", ""},
+		cli.StringFlag{"conf", "~/.mqttcli.cfg", "config file path", ""},
 		cli.StringFlag{
 			Name:  "will-payload",
 			Value: "",
