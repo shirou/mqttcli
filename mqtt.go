@@ -113,11 +113,11 @@ func NewOption(c *cli.Context) (*MQTT.ClientOptions, error) {
 		}
 		tlsConfig.RootCAs = certPool
 	}
-	insecure := true
+	insecure := c.Bool("insecure")
 	if insecure {
 		tlsConfig.InsecureSkipVerify = true
-		opts.SetTlsConfig(tlsConfig)
 	}
+	opts.SetTlsConfig(tlsConfig)
 
 	user := c.String("u")
 	if user != "" {
