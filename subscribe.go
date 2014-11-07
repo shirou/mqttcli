@@ -11,7 +11,11 @@ func subscribe(c *cli.Context) {
 	if c.Bool("d") {
 		log.SetLevel(log.DebugLevel)
 	}
-	opts := NewOption(c)
+	opts, err := NewOption(c)
+	if err != nil {
+		log.Error(err)
+		os.Exit(1)
+	}
 	if c.Bool("c") {
 		opts.SetCleanSession(false)
 	}

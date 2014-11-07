@@ -13,7 +13,11 @@ func publish(c *cli.Context) {
 		log.SetLevel(log.DebugLevel)
 	}
 
-	opts := NewOption(c)
+	opts, err := NewOption(c)
+	if err != nil {
+		log.Error(err)
+		os.Exit(1)
+	}
 	client, err := connect(c, opts)
 	if err != nil {
 		log.Error(err)

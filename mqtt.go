@@ -3,7 +3,9 @@ package main
 import (
 	"crypto/rand"
 	"crypto/tls"
+	"crypto/x509"
 	"fmt"
+	"io/ioutil"
 	"time"
 
 	MQTT "git.eclipse.org/gitroot/paho/org.eclipse.paho.mqtt.golang.git"
@@ -61,6 +63,17 @@ func (m *MQTTClient) Subscribe(topic string, qos int) error {
 	return nil
 }
 
+func getCertPool(pemPath string) (*x509.CertPool, error) {
+	certs := x509.NewCertPool()
+
+	pemData, err := ioutil.ReadFile(pemPath)
+	if err != nil {
+		return nil, err
+	}
+	certs.AppendCertsFromPEM(pemData)
+	return certs, nil
+}
+
 // getRandomClientId returns randomized ClientId.
 func getRandomClientId() string {
 	const alphanum = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
@@ -73,7 +86,7 @@ func getRandomClientId() string {
 }
 
 // NewOption returns ClientOptions via parsing command line options.
-func NewOption(c *cli.Context) *MQTT.ClientOptions {
+func NewOption(c *cli.Context) (*MQTT.ClientOptions, error) {
 	opts := MQTT.NewClientOptions()
 
 	host := c.String("host")
@@ -89,14 +102,20 @@ func NewOption(c *cli.Context) *MQTT.ClientOptions {
 	}
 	opts.SetClientId(clientId)
 
+	tlsConfig := &tls.Config{InsecureSkipVerify: false}
 	cafile := c.String("cafile")
 	scheme := "tcp"
 	if cafile != "" {
 		scheme = "ssl"
+		certPool, err := getCertPool(cafile)
+		if err != nil {
+			return nil, err
+		}
+		tlsConfig.RootCAs = certPool
 	}
 	insecure := true
 	if insecure {
-		tlsConfig := &tls.Config{InsecureSkipVerify: true}
+		tlsConfig.InsecureSkipVerify = true
 		opts.SetTlsConfig(tlsConfig)
 	}
 
@@ -115,5 +134,5 @@ func NewOption(c *cli.Context) *MQTT.ClientOptions {
 
 		opts.AddBroker(brokerUri)
 	}
-	return opts
+	return opts, nil
 }

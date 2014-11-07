@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"runtime"
+	"strings"
 
 	MQTT "git.eclipse.org/gitroot/paho/org.eclipse.paho.mqtt.golang.git"
 	log "github.com/Sirupsen/logrus"
@@ -16,7 +17,7 @@ const DefaultConfigFile = ".mqttcli.cfg" // Under HOME
 
 type Config struct {
 	Host     string `json:"host"`
-	Port     string `json:"port"`
+	Port     int    `json:"port"`
 	UserName string `json:"username"`
 	Password string `json:"password"`
 }
@@ -48,11 +49,11 @@ func UserHomeDir() string {
 }
 func getSettingsFromFile(p string, opts *MQTT.ClientOptions) error {
 	confPath := ""
-
-	if p == "~/.mqtt.cfg" || p == "" {
-		home := UserHomeDir()
+	home := UserHomeDir()
+	// replace home to ~ in order to match
+	p = strings.Replace(p, home, "~", 1)
+	if p == "~/.mqttcli.cfg" || p == "" {
 		confPath = path.Join(home, DefaultConfigFile)
-
 		_, err := os.Stat(confPath)
 		if os.IsNotExist(err) {
 			return err
@@ -63,14 +64,18 @@ func getSettingsFromFile(p string, opts *MQTT.ClientOptions) error {
 
 	ret, err := readFromConfigFile(confPath)
 	if err != nil {
+		log.Error(err)
 		return err
 	}
 	if ret.Host != "" {
-		if ret.Port == "" {
-			ret.Port = "1883"
+		if ret.Port == 0 {
+			ret.Port = 1883
 		}
-		scheme := "tcp" // FIXME:
-		brokerUri := fmt.Sprintf("%s://%s:%s", scheme, ret.Host, ret.Port)
+		scheme := "tcp"
+		if ret.Port == 8883 {
+			scheme = "ssl"
+		}
+		brokerUri := fmt.Sprintf("%s://%s:%d", scheme, ret.Host, ret.Port)
 		log.Infof("Broker URI: %s", brokerUri)
 		opts.AddBroker(brokerUri)
 	}
