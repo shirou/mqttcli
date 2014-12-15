@@ -30,21 +30,21 @@ func (c *Config) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if c.Host, err = js.Get("host").String(); err != nil {
-		return err
+		c.Host = ""
 	}
 	// Port can be string either int
 	if c.Port, err = js.Get("port").Int(); err != nil {
 		p, err := js.Get("port").String()
 		c.Port, err = strconv.Atoi(p)
 		if err != nil {
-			return err
+			c.Port = 0
 		}
 	}
 	if c.UserName, err = js.Get("username").String(); err != nil {
-		return err
+		c.UserName = ""
 	}
 	if c.Password, err = js.Get("password").String(); err != nil {
-		return err
+		c.Password = ""
 	}
 	return nil
 }
