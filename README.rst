@@ -47,7 +47,7 @@ example:
 
    {
      "host": "localhost",
-     "port": "1883",
+     "port": 1883,
      "username": "user",
      "password": "blahblah"
    }
