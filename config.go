@@ -7,10 +7,12 @@ import (
 	"os"
 	"path"
 	"runtime"
+	"strconv"
 	"strings"
 
 	MQTT "git.eclipse.org/gitroot/paho/org.eclipse.paho.mqtt.golang.git"
 	log "github.com/Sirupsen/logrus"
+	simpleJson "github.com/bitly/go-simplejson"
 )
 
 const DefaultConfigFile = ".mqttcli.cfg" // Under HOME
@@ -20,6 +22,31 @@ type Config struct {
 	Port     int    `json:"port"`
 	UserName string `json:"username"`
 	Password string `json:"password"`
+}
+
+func (c *Config) UnmarshalJSON(data []byte) error {
+	js, err := simpleJson.NewJson(data)
+	if err != nil {
+		return err
+	}
+	if c.Host, err = js.Get("host").String(); err != nil {
+		return err
+	}
+	// Port can be string either int
+	if c.Port, err = js.Get("port").Int(); err != nil {
+		p, err := js.Get("port").String()
+		c.Port, err = strconv.Atoi(p)
+		if err != nil {
+			return err
+		}
+	}
+	if c.UserName, err = js.Get("username").String(); err != nil {
+		return err
+	}
+	if c.Password, err = js.Get("password").String(); err != nil {
+		return err
+	}
+	return nil
 }
 
 func readFromConfigFile(path string) (Config, error) {
