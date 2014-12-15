@@ -14,6 +14,8 @@ var usage = `
 Usage here
 `
 
+const version = "0.0.1"
+
 func initFunc() {
 	log.SetLevel(log.WarnLevel)
 	log.SetOutput(colorable.NewColorableStdout())
@@ -96,6 +98,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "mqttcli"
 	app.Usage = usage
+	app.Version = version
 
 	commonFlags := []cli.Flag{
 		cli.StringFlag{
