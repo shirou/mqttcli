@@ -17,6 +17,11 @@ func subscribe(c *cli.Context) {
 		os.Exit(1)
 	}
 	if c.Bool("c") {
+		clientId := c.String("i")
+		if clientId == "" {
+			log.Warn("clean Flag does not work without client id")
+		}
+
 		opts.SetCleanSession(false)
 	}
 
