@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"time"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
@@ -25,12 +26,6 @@ func subscribe(c *cli.Context) {
 		opts.SetCleanSession(false)
 	}
 
-	client, err := connect(c, opts)
-	if err != nil {
-		log.Error(err)
-		os.Exit(1)
-	}
-
 	qos := c.Int("q")
 	topic := c.String("t")
 	if topic == "" {
@@ -39,8 +34,19 @@ func subscribe(c *cli.Context) {
 	}
 	log.Infof("Topic: %s", topic)
 
-	err = client.Subscribe(topic, qos)
+	subscribed := map[string]byte{
+		topic: byte(qos),
+	}
+
+	_, err = connect(c, opts, subscribed)
 	if err != nil {
 		log.Error(err)
+		os.Exit(1)
 	}
+
+	// loops forever
+	for {
+		time.Sleep(time.Second)
+	}
+
 }

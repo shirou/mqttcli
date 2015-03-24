@@ -3,6 +3,8 @@ package main
 import (
 	"bufio"
 	"os"
+	"sync"
+	"time"
 
 	MQTT "git.eclipse.org/gitroot/paho/org.eclipse.paho.mqtt.golang.git"
 	log "github.com/Sirupsen/logrus"
@@ -22,9 +24,7 @@ func initFunc() {
 }
 
 // connects MQTT broker
-func connect(c *cli.Context, opts *MQTT.ClientOptions) (*MQTTClient, error) {
-	log.Info("Connecting...")
-
+func connect(c *cli.Context, opts *MQTT.ClientOptions, subscribed map[string]byte) (*MQTTClient, error) {
 	willPayload := c.String("will-payload")
 	willQoS := c.Int("will-qos")
 	willRetain := c.Bool("will-retain")
@@ -34,11 +34,16 @@ func connect(c *cli.Context, opts *MQTT.ClientOptions) (*MQTTClient, error) {
 	}
 
 	client := &MQTTClient{Opts: opts}
+	client.lock = new(sync.Mutex)
+	client.Subscribed = subscribed
+
+	opts.SetOnConnectHandler(client.SubscribeOnConnect)
+	opts.SetConnectionLostHandler(client.ConnectionLost)
+
 	_, err := client.Connect()
 	if err != nil {
 		return nil, err
 	}
-	log.Info("Connected")
 
 	return client, nil
 }
@@ -48,11 +53,6 @@ func pubsub(c *cli.Context) {
 		log.SetLevel(log.DebugLevel)
 	}
 	opts, err := NewOption(c)
-	if err != nil {
-		log.Error(err)
-		os.Exit(1)
-	}
-	client, err := connect(c, opts)
 	if err != nil {
 		log.Error(err)
 		os.Exit(1)
@@ -73,6 +73,16 @@ func pubsub(c *cli.Context) {
 	log.Infof("Pub Topic: %s", pubtopic)
 	retain := c.Bool("r")
 
+	subscribed := map[string]byte{
+		subtopic: byte(0),
+	}
+
+	client, err := connect(c, opts, subscribed)
+	if err != nil {
+		log.Error(err)
+		os.Exit(1)
+	}
+
 	go func() {
 		// Read from Stdin and publish
 		scanner := bufio.NewScanner(os.Stdin)
@@ -84,12 +94,10 @@ func pubsub(c *cli.Context) {
 		}
 	}()
 
-	// Subscribe and print to stdout
-	err = client.Subscribe(subtopic, qos)
-	if err != nil {
-		log.Error(err)
+	// while loop
+	for {
+		time.Sleep(1 * time.Second)
 	}
-
 }
 
 func main() {

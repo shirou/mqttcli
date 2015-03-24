@@ -6,7 +6,7 @@ import (
 	"crypto/x509"
 	"fmt"
 	"io/ioutil"
-	"time"
+	"sync"
 
 	MQTT "git.eclipse.org/gitroot/paho/org.eclipse.paho.mqtt.golang.git"
 	log "github.com/Sirupsen/logrus"
@@ -14,15 +14,24 @@ import (
 )
 
 var MaxClientIdLen = 8
+var MaxRetryCount = 3
 
 type MQTTClient struct {
-	Client *MQTT.Client
-	Opts   *MQTT.ClientOptions
+	Client     *MQTT.Client
+	Opts       *MQTT.ClientOptions
+	RetryCount int
+	Subscribed map[string]byte
+
+	lock *sync.Mutex // use for reconnect
 }
 
 // Connects connect to the MQTT broker with Options.
 func (m *MQTTClient) Connect() (*MQTT.Client, error) {
+
 	m.Client = MQTT.NewClient(m.Opts)
+
+	log.Info("connecting...")
+
 	if token := m.Client.Connect(); token.Wait() && token.Error() != nil {
 		return nil, token.Error()
 	}
@@ -39,21 +48,23 @@ func (m *MQTTClient) Publish(topic string, payload []byte, qos int, retain bool,
 	return token.Error()
 }
 
-func onMessageReceived(client *MQTT.Client, message MQTT.Message) {
-	log.Infof("topic:%s  / msg:%s", message.Topic(), message.Payload())
-	fmt.Println(string(message.Payload()))
+func (m *MQTTClient) SubscribeOnConnect(client *MQTT.Client) {
+	log.Infof("client connected")
+
+	token := client.SubscribeMultiple(m.Subscribed, m.onMessageReceived)
+	token.Wait()
+	if token.Error() != nil {
+		log.Error(token.Error())
+	}
 }
 
-func (m *MQTTClient) Subscribe(topic string, qos int) error {
-	token := m.Client.Subscribe(topic, byte(qos), onMessageReceived)
-	if token.Error() != nil {
-		return token.Error()
-	}
+func (m *MQTTClient) ConnectionLost(client *MQTT.Client, reason error) {
+	log.Errorf("client disconnected: %s", reason)
+}
 
-	for {
-		time.Sleep(1 * time.Second)
-	}
-	return nil
+func (m *MQTTClient) onMessageReceived(client *MQTT.Client, message MQTT.Message) {
+	log.Infof("topic:%s  / msg:%s", message.Topic(), message.Payload())
+	fmt.Println(string(message.Payload()))
 }
 
 func getCertPool(pemPath string) (*x509.CertPool, error) {
@@ -127,5 +138,7 @@ func NewOption(c *cli.Context) (*MQTT.ClientOptions, error) {
 
 		opts.AddBroker(brokerUri)
 	}
+
+	opts.SetAutoReconnect(true)
 	return opts, nil
 }

@@ -18,7 +18,7 @@ func publish(c *cli.Context) {
 		log.Error(err)
 		os.Exit(1)
 	}
-	client, err := connect(c, opts)
+	client, err := connect(c, opts, map[string]byte{})
 	if err != nil {
 		log.Error(err)
 		os.Exit(1)
