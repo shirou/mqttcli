@@ -16,45 +16,38 @@ import (
 var MaxClientIdLen = 8
 
 type MQTTClient struct {
-	Client *MQTT.MqttClient
+	Client *MQTT.Client
 	Opts   *MQTT.ClientOptions
 }
 
 // Connects connect to the MQTT broker with Options.
-func (m *MQTTClient) Connect() (*MQTT.MqttClient, error) {
+func (m *MQTTClient) Connect() (*MQTT.Client, error) {
 	m.Client = MQTT.NewClient(m.Opts)
-	_, err := m.Client.Start()
-	if err != nil {
-		return nil, err
+	if token := m.Client.Connect(); token.Wait() && token.Error() != nil {
+		return nil, token.Error()
 	}
 	return m.Client, nil
 }
 
-func (m *MQTTClient) Publish(topic string, payload []byte, qos int, retain bool) error {
-	mqttmsg := MQTT.NewMessage(payload)
-	// FIXME: validate qos number
-	mqttmsg.SetQoS(MQTT.QoS(qos))
-	mqttmsg.SetRetainedFlag(retain)
+func (m *MQTTClient) Publish(topic string, payload []byte, qos int, retain bool, sync bool) error {
+	token := m.Client.Publish(topic, byte(qos), retain, payload)
 
-	receipt := m.Client.PublishMessage(topic, mqttmsg)
-	<-receipt
+	if sync == true {
+		token.Wait()
+	}
 
-	return nil
+	return token.Error()
 }
 
-func onMessageReceived(client *MQTT.MqttClient, message MQTT.Message) {
+func onMessageReceived(client *MQTT.Client, message MQTT.Message) {
 	log.Infof("topic:%s  / msg:%s", message.Topic(), message.Payload())
 	fmt.Println(string(message.Payload()))
 }
 
 func (m *MQTTClient) Subscribe(topic string, qos int) error {
-	topicFilter, err := MQTT.NewTopicFilter(topic, byte(qos))
-	if err != nil {
-		return err
-	}
-	_, err = m.Client.StartSubscription(onMessageReceived, topicFilter)
-	if err != nil {
-		return err
+	token := m.Client.Subscribe(topic, byte(qos), onMessageReceived)
+	if token.Error() != nil {
+		return token.Error()
 	}
 
 	for {
@@ -100,9 +93,9 @@ func NewOption(c *cli.Context) (*MQTT.ClientOptions, error) {
 	if clientId == "" {
 		clientId = getRandomClientId()
 	}
-	opts.SetClientId(clientId)
+	opts.SetClientID(clientId)
 
-	tlsConfig := &tls.Config{InsecureSkipVerify: false}
+	TLSConfig := &tls.Config{InsecureSkipVerify: false}
 	cafile := c.String("cafile")
 	scheme := "tcp"
 	if cafile != "" {
@@ -111,13 +104,13 @@ func NewOption(c *cli.Context) (*MQTT.ClientOptions, error) {
 		if err != nil {
 			return nil, err
 		}
-		tlsConfig.RootCAs = certPool
+		TLSConfig.RootCAs = certPool
 	}
 	insecure := c.Bool("insecure")
 	if insecure {
-		tlsConfig.InsecureSkipVerify = true
+		TLSConfig.InsecureSkipVerify = true
 	}
-	opts.SetTlsConfig(tlsConfig)
+	opts.SetTLSConfig(TLSConfig)
 
 	user := c.String("u")
 	if user != "" {

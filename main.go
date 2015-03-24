@@ -30,7 +30,7 @@ func connect(c *cli.Context, opts *MQTT.ClientOptions) (*MQTTClient, error) {
 	willRetain := c.Bool("will-retain")
 	willTopic := c.String("will-topic")
 	if willPayload != "" && willTopic != "" {
-		opts.SetWill(willTopic, willPayload, MQTT.QoS(willQoS), willRetain)
+		opts.SetWill(willTopic, willPayload, byte(willQoS), willRetain)
 	}
 
 	client := &MQTTClient{Opts: opts}
@@ -77,7 +77,7 @@ func pubsub(c *cli.Context) {
 		// Read from Stdin and publish
 		scanner := bufio.NewScanner(os.Stdin)
 		for scanner.Scan() {
-			err = client.Publish(pubtopic, []byte(scanner.Text()), qos, retain)
+			err = client.Publish(pubtopic, []byte(scanner.Text()), qos, retain, true)
 			if err != nil {
 				log.Error(err)
 			}
