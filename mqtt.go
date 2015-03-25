@@ -48,6 +48,14 @@ func (m *MQTTClient) Publish(topic string, payload []byte, qos int, retain bool,
 	return token.Error()
 }
 
+func (m *MQTTClient) Disconnect() error {
+	if m.Client.IsConnected() {
+		m.Client.Disconnect(250)
+		log.Info("client disconnected")
+	}
+	return nil
+}
+
 func (m *MQTTClient) SubscribeOnConnect(client *MQTT.Client) {
 	log.Infof("client connected")
 

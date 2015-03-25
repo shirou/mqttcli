@@ -53,4 +53,5 @@ func publish(c *cli.Context) {
 
 	}
 	log.Info("Published")
+	client.Disconnect()
 }
