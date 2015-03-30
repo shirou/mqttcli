@@ -87,7 +87,7 @@ func pubsub(c *cli.Context) {
 		// Read from Stdin and publish
 		scanner := bufio.NewScanner(os.Stdin)
 		for scanner.Scan() {
-			err = client.Publish(pubtopic, []byte(scanner.Text()), qos, retain, true)
+			err = client.Publish(pubtopic, []byte(scanner.Text()), qos, retain, false)
 			if err != nil {
 				log.Error(err)
 			}

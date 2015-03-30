@@ -50,7 +50,7 @@ func (m *MQTTClient) Publish(topic string, payload []byte, qos int, retain bool,
 
 func (m *MQTTClient) Disconnect() error {
 	if m.Client.IsConnected() {
-		m.Client.Disconnect(250)
+		m.Client.Disconnect(20)
 		log.Info("client disconnected")
 	}
 	return nil
