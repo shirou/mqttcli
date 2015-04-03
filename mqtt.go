@@ -59,10 +59,12 @@ func (m *MQTTClient) Disconnect() error {
 func (m *MQTTClient) SubscribeOnConnect(client *MQTT.Client) {
 	log.Infof("client connected")
 
-	token := client.SubscribeMultiple(m.Subscribed, m.onMessageReceived)
-	token.Wait()
-	if token.Error() != nil {
-		log.Error(token.Error())
+	if len(m.Subscribed) > 0 {
+		token := client.SubscribeMultiple(m.Subscribed, m.onMessageReceived)
+		token.Wait()
+		if token.Error() != nil {
+			log.Error(token.Error())
+		}
 	}
 }
 
@@ -71,7 +73,7 @@ func (m *MQTTClient) ConnectionLost(client *MQTT.Client, reason error) {
 }
 
 func (m *MQTTClient) onMessageReceived(client *MQTT.Client, message MQTT.Message) {
-	log.Infof("topic:%s  / msg:%s", message.Topic(), message.Payload())
+	log.Infof("topic:%s / msg:%s", message.Topic(), message.Payload())
 	fmt.Println(string(message.Payload()))
 }
 
