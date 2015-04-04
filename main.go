@@ -16,7 +16,7 @@ var usage = `
 Usage here
 `
 
-const version = "0.0.1"
+var version string
 
 func initFunc() {
 	log.SetLevel(log.WarnLevel)
