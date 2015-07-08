@@ -127,6 +127,16 @@ func NewOption(c *cli.Context) (*MQTT.ClientOptions, error) {
 		}
 		TLSConfig.RootCAs = certPool
 	}
+	cert := c.String("cert")
+	if cert != "" {
+		scheme = "ssl"
+		certPool, err := getCertPool(cert)
+		if err != nil {
+			return nil, err
+		}
+		TLSConfig.ClientAuth = tls.RequireAndVerifyClientCert
+		TLSConfig.ClientCAs = certPool
+	}
 	insecure := c.Bool("insecure")
 	if insecure {
 		TLSConfig.InsecureSkipVerify = true
