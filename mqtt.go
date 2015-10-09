@@ -116,44 +116,19 @@ func NewOption(c *cli.Context) (*MQTT.ClientOptions, error) {
 	}
 	opts.SetClientID(clientId)
 
-	TLSConfig := &tls.Config{InsecureSkipVerify: false}
-	cafile := c.String("cafile")
 	scheme := "tcp"
-	if cafile != "" {
-		scheme = "ssl"
-		certPool, err := getCertPool(cafile)
-		if err != nil {
-			return nil, err
-		}
-		TLSConfig.RootCAs = certPool
-	}
-	cert := c.String("cert")
-	if cert != "" {
-		scheme = "ssl"
-		certPool, err := getCertPool(cert)
-		if err != nil {
-			return nil, err
-		}
-		TLSConfig.ClientAuth = tls.RequireAndVerifyClientCert
-		TLSConfig.ClientCAs = certPool
-	}
+	cafile := c.String("cafile")
 	key := c.String("key")
-	if key != "" {
-		scheme = "ssl"
-		if cert == "" {
-			return nil, fmt.Errorf("key specified but cert is not specified")
-		}
-		cert, err := tls.LoadX509KeyPair(cert, key)
-		if err != nil {
-			return nil, err
-		}
-		TLSConfig.Certificates = []tls.Certificate{cert}
-	}
+	cert := c.String("cert")
 	insecure := c.Bool("insecure")
-	if insecure {
-		TLSConfig.InsecureSkipVerify = true
+	tlsConfig, ok, err := makeTlsConfig(cafile, cert, key, insecure)
+	if err != nil {
+		return nil, err
 	}
-	opts.SetTLSConfig(TLSConfig)
+	if ok {
+		opts.SetTLSConfig(tlsConfig)
+		scheme = "ssl"
+	}
 
 	user := c.String("u")
 	if user != "" {
@@ -173,4 +148,43 @@ func NewOption(c *cli.Context) (*MQTT.ClientOptions, error) {
 
 	opts.SetAutoReconnect(true)
 	return opts, nil
+}
+
+// makeTlsConfig creats new tls.Config. If returned ok is false, does not need set to MQTToption.
+func makeTlsConfig(cafile, cert, key string, insecure bool) (*tls.Config, bool, error) {
+	TLSConfig := &tls.Config{InsecureSkipVerify: false}
+	var ok bool
+	if insecure {
+		TLSConfig.InsecureSkipVerify = true
+		ok = true
+	}
+	if cafile != "" {
+		certPool, err := getCertPool(cafile)
+		if err != nil {
+			return nil, false, err
+		}
+		TLSConfig.RootCAs = certPool
+		ok = true
+	}
+	if cert != "" {
+		certPool, err := getCertPool(cert)
+		if err != nil {
+			return nil, false, err
+		}
+		TLSConfig.ClientAuth = tls.RequireAndVerifyClientCert
+		TLSConfig.ClientCAs = certPool
+		ok = true
+	}
+	if key != "" {
+		if cert == "" {
+			return nil, false, fmt.Errorf("key specified but cert is not specified")
+		}
+		cert, err := tls.LoadX509KeyPair(cert, key)
+		if err != nil {
+			return nil, false, err
+		}
+		TLSConfig.Certificates = []tls.Certificate{cert}
+		ok = true
+	}
+	return TLSConfig, ok, nil
 }
