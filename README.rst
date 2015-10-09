@@ -51,6 +51,21 @@ example:
      "password": "blahblah"
    }
 
+If you use AWS IoT, you can use these JSON as mqttcli config file, such as
+
+::
+
+   {
+     "host": "A3HVHEAALED.iot.ap-northeast-1.amazonaws.com",
+     "port": 8883,
+     "clientId": "something",
+     "thingName": "something",
+     "caCert": "path/to/root-CA.crt",
+     "clientCert": "path/to/2a338xx2xxf-certificate.pem.crt",
+     "privateKey": "path/to/aad380efffx-private.pem.key"
+   }
+
+You may change cert files path to where you placed.
 
 Pub
 -------
