@@ -133,6 +133,7 @@ func main() {
 		cli.IntFlag{"q", 0, "QoS", ""},
 		cli.StringFlag{"cafile", "", "CA certificates", ""},
 		cli.StringFlag{"cert", "", "Client certificates", ""},
+		cli.StringFlag{"key", "", "Client private key", ""},
 		cli.StringFlag{"i", "", "ClientiId. Defaults random.", ""},
 		cli.StringFlag{"m", "test message", "Message body", ""},
 		cli.BoolFlag{"r", "message should be retained.", ""},
