@@ -2,7 +2,7 @@ mqttcli -- MQTT Client for shell scripting
 =================================================
 
 mqttcli is an MQTT 3.1.1 Client which has almost same options with
-mosquitto_pub/sub. However, it has additional functionallity and a
+mosquitto_pub/sub. However, it has additional functionality and a
 pubsub command which is suite for the shell script pipelining.
 
 Install
@@ -12,7 +12,7 @@ Download from here. Please choose your artitecture. (and chmod ugo+x if needed)
 
 https://drone.io/github.com/shirou/mqttcli/files
 
-Or if you have golang environment.
+Or if you have golang environment, type this to build on your host.
 
 ::
 
@@ -25,7 +25,7 @@ Usage
 common
 ----------
 
-You can set host, port, username and password on the Environment.
+You can set host, port, username and password on the Environment variables.
 
 ::
 
@@ -34,12 +34,11 @@ You can set host, port, username and password on the Environment.
     export MQTT_USERNAME="user"
     export MQTT_PASSWORD="blahblah"
 
-or using this config file. You can specifiy config file using
-``--conf`` option, or place ``~/.mqttcli.cfg``.
+or using a config file. You can specify a config file by ``--conf`` option. or automatically load from ``~/.mqttcli.cfg``.
 
 ::
 
-  % mqttcli sub --conf settings.json  -t "some/topic"
+  % mqttcli sub --conf yoursettings.json -t "some/topic"
 
 example:
 
