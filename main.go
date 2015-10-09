@@ -18,7 +18,7 @@ Usage here
 
 var version string
 
-func initFunc() {
+func init() {
 	log.SetLevel(log.WarnLevel)
 	log.SetOutput(colorable.NewColorableStdout())
 }
@@ -101,8 +101,6 @@ func pubsub(c *cli.Context) {
 }
 
 func main() {
-	initFunc()
-
 	app := cli.NewApp()
 	app.Name = "mqttcli"
 	app.Usage = usage
