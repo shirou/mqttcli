@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"sync"
 	"time"
@@ -49,9 +50,7 @@ func connect(c *cli.Context, opts *MQTT.ClientOptions, subscribed map[string]byt
 }
 
 func pubsub(c *cli.Context) {
-	if c.Bool("d") {
-		log.SetLevel(log.DebugLevel)
-	}
+	setDebugLevel(c)
 	opts, err := NewOption(c)
 	if err != nil {
 		log.Error(err)
@@ -127,17 +126,59 @@ func main() {
 			Value:  "",
 			Usage:  "provide a password",
 			EnvVar: "MQTT_PASSWORD"},
-		cli.StringFlag{"t", "", "mqtt topic to publish to.", ""},
-		cli.IntFlag{"q", 0, "QoS", ""},
-		cli.StringFlag{"cafile", "", "CA certificates", ""},
-		cli.StringFlag{"cert", "", "Client certificates", ""},
-		cli.StringFlag{"key", "", "Client private key", ""},
-		cli.StringFlag{"i", "", "ClientiId. Defaults random.", ""},
-		cli.StringFlag{"m", "test message", "Message body", ""},
-		cli.BoolFlag{"r", "message should be retained.", ""},
-		cli.BoolFlag{"d", "enable debug messages", ""},
-		cli.BoolFlag{"insecure", "do not check that the server certificate", ""},
-		cli.StringFlag{"conf", "~/.mqttcli.cfg", "config file path", ""},
+		cli.StringFlag{
+			Name:  "t",
+			Value: "",
+			Usage: "mqtt topic to publish to.",
+		},
+		cli.IntFlag{
+			Name:  "q",
+			Value: 0,
+			Usage: "QoS",
+		},
+		cli.StringFlag{
+			Name:  "cafile",
+			Value: "",
+			Usage: "CA certificates",
+		},
+		cli.StringFlag{
+			Name:  "cert",
+			Value: "",
+			Usage: "Client certificates",
+		},
+		cli.StringFlag{
+			Name:  "key",
+			Value: "",
+			Usage: "Client private key",
+		},
+		cli.StringFlag{
+			Name:  "i",
+			Value: "",
+			Usage: "ClientiId. Defaults random.",
+		},
+		cli.StringFlag{
+			Name:  "m",
+			Value: "test message",
+			Usage: "Message body",
+		},
+		cli.BoolFlag{
+			Name:  "r",
+			Usage: "message should be retained.",
+		},
+		cli.StringSliceFlag{
+			Name:  "d",
+			Value: &cli.StringSlice{},
+			Usage: "enable debug messages",
+		},
+		cli.BoolFlag{
+			Name:  "insecure",
+			Usage: "do not check that the server certificate",
+		},
+		cli.StringFlag{
+			Name:   "conf",
+			Value:  "~/.mqttcli.cfg",
+			Usage:  "config file path",
+			EnvVar: "MQTTCLI_CONFPATH"},
 		cli.StringFlag{
 			Name:  "will-payload",
 			Value: "",
@@ -159,7 +200,10 @@ func main() {
 		},
 	}
 	pubFlags := append(commonFlags,
-		cli.BoolFlag{"s", "read message from stdin, sending line by line as a message", ""},
+		cli.BoolFlag{
+			Name:  "s",
+			Usage: "read message from stdin, sending line by line as a message",
+		},
 	)
 	subFlags := append(commonFlags,
 		cli.BoolFlag{
@@ -199,4 +243,13 @@ func main() {
 		},
 	}
 	app.Run(os.Args)
+}
+
+func setDebugLevel(c *cli.Context) {
+	d := c.StringSlice("d")
+	fmt.Println(d)
+	switch len(d) {
+	case 1:
+		log.SetLevel(log.DebugLevel)
+	}
 }

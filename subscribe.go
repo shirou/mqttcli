@@ -9,9 +9,7 @@ import (
 )
 
 func subscribe(c *cli.Context) {
-	if c.Bool("d") {
-		log.SetLevel(log.DebugLevel)
-	}
+	setDebugLevel(c)
 	opts, err := NewOption(c)
 	if err != nil {
 		log.Error(err)
