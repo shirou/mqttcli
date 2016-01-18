@@ -2,7 +2,7 @@ package main
 
 import (
 	"bufio"
-	"fmt"
+	stdlog "log"
 	"os"
 	"sync"
 	"time"
@@ -165,9 +165,24 @@ func main() {
 			Name:  "r",
 			Usage: "message should be retained.",
 		},
-		cli.StringSliceFlag{
+		cli.BoolFlag{
 			Name:  "d",
-			Value: &cli.StringSlice{},
+			Usage: "enable debug messages",
+		},
+		cli.BoolFlag{
+			Name:  "dd",
+			Usage: "enable debug messages",
+		},
+		cli.BoolFlag{
+			Name:  "ddd",
+			Usage: "enable debug messages",
+		},
+		cli.BoolFlag{
+			Name:  "dddd",
+			Usage: "enable debug messages",
+		},
+		cli.BoolFlag{
+			Name:  "ddddd",
 			Usage: "enable debug messages",
 		},
 		cli.BoolFlag{
@@ -246,10 +261,13 @@ func main() {
 }
 
 func setDebugLevel(c *cli.Context) {
-	d := c.StringSlice("d")
-	fmt.Println(d)
-	switch len(d) {
-	case 1:
+	if c.Bool("d") {
 		log.SetLevel(log.DebugLevel)
+	} else if c.Bool("dd") {
+		log.SetLevel(log.DebugLevel)
+		MQTT.WARN = stdlog.New(os.Stdout, "", stdlog.LstdFlags)
+	} else if c.Bool("ddd") {
+		log.SetLevel(log.DebugLevel)
+		MQTT.DEBUG = stdlog.New(os.Stdout, "", stdlog.LstdFlags)
 	}
 }
