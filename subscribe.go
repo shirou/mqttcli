@@ -15,6 +15,13 @@ func subscribe(c *cli.Context) {
 		log.Error(err)
 		os.Exit(1)
 	}
+
+	// Setting KeepAlive to 0 disables it. Paho MQTT client is currently broken
+	// and does not send ping when subscribing only.
+	// TODO set KeepAlive to a real value (60s?) when this change is merged:
+	// https://git.eclipse.org/r/#/c/65850/
+	opts.SetKeepAlive(time.Duration(0))
+
 	if c.Bool("c") {
 		clientId := c.String("i")
 		if clientId == "" {
