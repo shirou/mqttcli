@@ -7,9 +7,9 @@ import (
 	"sync"
 	"time"
 
-	MQTT "git.eclipse.org/gitroot/paho/org.eclipse.paho.mqtt.golang.git"
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
+	MQTT "github.com/eclipse/paho.mqtt.golang"
 	colorable "github.com/mattn/go-colorable"
 )
 

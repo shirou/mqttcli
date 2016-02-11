@@ -8,9 +8,9 @@ import (
 	"io/ioutil"
 	"sync"
 
-	MQTT "git.eclipse.org/gitroot/paho/org.eclipse.paho.mqtt.golang.git"
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
+	MQTT "github.com/eclipse/paho.mqtt.golang"
 )
 
 var MaxClientIdLen = 8

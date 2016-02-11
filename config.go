@@ -10,9 +10,9 @@ import (
 	"strconv"
 	"strings"
 
-	MQTT "git.eclipse.org/gitroot/paho/org.eclipse.paho.mqtt.golang.git"
 	log "github.com/Sirupsen/logrus"
 	simpleJson "github.com/bitly/go-simplejson"
+	MQTT "github.com/eclipse/paho.mqtt.golang"
 )
 
 const DefaultConfigFile = ".mqttcli.cfg" // Under HOME
