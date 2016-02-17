@@ -15,6 +15,8 @@ func subscribe(c *cli.Context) {
 		log.Error(err)
 		os.Exit(1)
 	}
+	opts.SetKeepAlive(time.Second * 60)
+
 	if c.Bool("c") {
 		clientId := c.String("i")
 		if clientId == "" {
