@@ -5,10 +5,10 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/codegangsta/cli"
+	"github.com/urfave/cli"
 )
 
-func subscribe(c *cli.Context) {
+func subscribe(c *cli.Context) error {
 	setDebugLevel(c)
 	opts, err := NewOption(c)
 	if err != nil {
@@ -49,4 +49,5 @@ func subscribe(c *cli.Context) {
 		time.Sleep(time.Second)
 	}
 
+	return nil
 }

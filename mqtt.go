@@ -9,15 +9,15 @@ import (
 	"sync"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/codegangsta/cli"
 	MQTT "github.com/eclipse/paho.mqtt.golang"
+	"github.com/urfave/cli"
 )
 
 var MaxClientIdLen = 8
 var MaxRetryCount = 3
 
 type MQTTClient struct {
-	Client     *MQTT.Client
+	Client     MQTT.Client
 	Opts       *MQTT.ClientOptions
 	RetryCount int
 	Subscribed map[string]byte
@@ -26,7 +26,7 @@ type MQTTClient struct {
 }
 
 // Connects connect to the MQTT broker with Options.
-func (m *MQTTClient) Connect() (*MQTT.Client, error) {
+func (m *MQTTClient) Connect() (MQTT.Client, error) {
 
 	m.Client = MQTT.NewClient(m.Opts)
 
@@ -56,7 +56,7 @@ func (m *MQTTClient) Disconnect() error {
 	return nil
 }
 
-func (m *MQTTClient) SubscribeOnConnect(client *MQTT.Client) {
+func (m *MQTTClient) SubscribeOnConnect(client MQTT.Client) {
 	log.Infof("client connected")
 
 	if len(m.Subscribed) > 0 {
@@ -68,11 +68,11 @@ func (m *MQTTClient) SubscribeOnConnect(client *MQTT.Client) {
 	}
 }
 
-func (m *MQTTClient) ConnectionLost(client *MQTT.Client, reason error) {
+func (m *MQTTClient) ConnectionLost(client MQTT.Client, reason error) {
 	log.Errorf("client disconnected: %s", reason)
 }
 
-func (m *MQTTClient) onMessageReceived(client *MQTT.Client, message MQTT.Message) {
+func (m *MQTTClient) onMessageReceived(client MQTT.Client, message MQTT.Message) {
 	log.Infof("topic:%s / msg:%s", message.Topic(), message.Payload())
 	fmt.Println(string(message.Payload()))
 }

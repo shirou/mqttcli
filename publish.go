@@ -5,10 +5,10 @@ import (
 	"os"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/codegangsta/cli"
+	"github.com/urfave/cli"
 )
 
-func publish(c *cli.Context) {
+func publish(c *cli.Context) error {
 	setDebugLevel(c)
 
 	opts, err := NewOption(c)
@@ -51,9 +51,5 @@ func publish(c *cli.Context) {
 
 	}
 	log.Info("Published")
-	err = client.Disconnect()
-	if err != nil {
-		log.Errorf("disconnect error: %s", err)
-	}
-
+	return client.Disconnect()
 }

@@ -8,9 +8,9 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/codegangsta/cli"
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 	colorable "github.com/mattn/go-colorable"
+	"github.com/urfave/cli"
 )
 
 var usage = `
@@ -49,7 +49,7 @@ func connect(c *cli.Context, opts *MQTT.ClientOptions, subscribed map[string]byt
 	return client, nil
 }
 
-func pubsub(c *cli.Context) {
+func pubsub(c *cli.Context) error {
 	setDebugLevel(c)
 	opts, err := NewOption(c)
 	if err != nil {
@@ -97,6 +97,7 @@ func pubsub(c *cli.Context) {
 	for {
 		time.Sleep(1 * time.Second)
 	}
+	return nil
 }
 
 func main() {
