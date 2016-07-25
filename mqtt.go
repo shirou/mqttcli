@@ -107,7 +107,10 @@ func NewOption(c *cli.Context) (*MQTT.ClientOptions, error) {
 	port := c.Int("p")
 
 	if host == "" {
-		getSettingsFromFile(c.String("conf"), opts)
+		err := getSettingsFromFile(c.String("conf"), opts)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	clientId := c.String("i")

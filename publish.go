@@ -51,5 +51,9 @@ func publish(c *cli.Context) {
 
 	}
 	log.Info("Published")
-	client.Disconnect()
+	err = client.Disconnect()
+	if err != nil {
+		log.Errorf("disconnect error: %s", err)
+	}
+
 }

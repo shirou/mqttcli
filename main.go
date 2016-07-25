@@ -257,7 +257,10 @@ func main() {
 			Action: pubsub,
 		},
 	}
-	app.Run(os.Args)
+	err := app.Run(os.Args)
+	if err != nil {
+		log.Error(err)
+	}
 }
 
 func setDebugLevel(c *cli.Context) {
