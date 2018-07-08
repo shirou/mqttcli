@@ -22,7 +22,7 @@ endif
 GOFLAGS := -ldflags "$(LDFLAGS)"
 
 ## Download dependencies and the run unit test and build the binary
-all: install clean build
+all: install clean test build
 
 ## Clean the dist directory
 clean:
@@ -34,6 +34,9 @@ install:
 	@which dep > /dev/null || go get github.com/golang/dep/cmd/dep
 	dep ensure -vendor-only
 
+## Run unit test
+test:
+	go test .
 ## Run for local development
 start:
 	DATA_DIRECTORY="$$PWD/data" \
