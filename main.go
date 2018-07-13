@@ -109,7 +109,7 @@ func main() {
 	commonFlags := []cli.Flag{
 		cli.StringFlag{
 			Name:   "host",
-			Value:  "",
+			Value:  "localhost",
 			Usage:  "mqtt host to connect to. Defaults to localhost",
 			EnvVar: "MQTT_HOST"},
 		cli.IntFlag{
