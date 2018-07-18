@@ -10,12 +10,12 @@ Install
 
 Download from `here`_. Please choose your artitecture. (and chmod ugo+x if needed)
 
-.. _here: https://github.com/sks/mqttcli/releases/latest
+.. _here: https://github.com/shirou/mqttcli/releases/latest
 
 
 ::
 
-  curl https://raw.githubusercontent.com/sks/mqttcli/master/install.sh | sh
+  curl https://raw.githubusercontent.com/shirou/mqttcli/master/install.sh | sh
 
 
 Or if you have golang environment, type this to build on your host.

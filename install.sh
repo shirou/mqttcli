@@ -2,7 +2,7 @@
 
 # Based on https://raw.githubusercontent.com/golang/dep/master/install.sh
 
-RELEASES_URL="https://github.com/sks/mqttcli/releases"
+RELEASES_URL="https://github.com/shirou/mqttcli/releases"
 INSTALL_NAME="mqttcli"
 if [ -z ${INSTALL_DIRECTORY} ]
 then
