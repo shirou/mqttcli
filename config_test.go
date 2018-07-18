@@ -42,6 +42,6 @@ func Test_ConfigCert(t *testing.T) {
 		t.Error(err)
 	}
 	if c.CaCert != "ca" || c.ClientCert != "client" || c.PrivateKey != "key" {
-		t.Error("parse failed, %#v", c)
+		t.Errorf("parse failed, %+v", c)
 	}
 }

@@ -8,9 +8,15 @@ pubsub command which is suite for the shell script pipelining.
 Install
 ==============
 
-Download from here. Please choose your artitecture. (and chmod ugo+x if needed)
+Download from `here`_. Please choose your artitecture. (and chmod ugo+x if needed)
 
-https://drone.io/github.com/shirou/mqttcli/files
+.. _here: https://github.com/shirou/mqttcli/releases/latest
+
+
+::
+
+  curl https://raw.githubusercontent.com/shirou/mqttcli/master/install.sh | sh
+
 
 Or if you have golang environment, type this to build on your host.
 
