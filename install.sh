@@ -90,6 +90,11 @@ initOS() {
 initArch
 initOS
 
+if [ ! -d $INSTALL_DIRECTORY ]
+then
+  mkdir -p $INSTALL_DIRECTORY
+fi
+
 # determine install directory if required
 echo "Will install into $INSTALL_DIRECTORY"
 
