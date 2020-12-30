@@ -107,138 +107,138 @@ func main() {
 	app.Version = version
 
 	commonFlags := []cli.Flag{
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:   "host",
 			Value:  "localhost",
 			Usage:  "mqtt host to connect to. Defaults to localhost",
-			EnvVar: "MQTT_HOST"},
-		cli.IntFlag{
+			EnvVars: []string{"MQTT_HOST"}},
+		&cli.IntFlag{
 			Name:   "p, port",
 			Value:  1883,
 			Usage:  "network port to connect to. Defaults to 1883",
-			EnvVar: "MQTT_PORT"},
-		cli.StringFlag{
+			EnvVars: []string{"MQTT_PORT"}},
+		&cli.StringFlag{
 			Name:   "u,user",
 			Value:  "",
 			Usage:  "provide a username",
-			EnvVar: "MQTT_USERNAME"},
-		cli.StringFlag{
+			EnvVars: []string{"MQTT_USERNAME"}},
+		&cli.StringFlag{
 			Name:   "P,password",
 			Value:  "",
 			Usage:  "provide a password",
-			EnvVar: "MQTT_PASSWORD"},
-		cli.StringFlag{
+			EnvVars: []string{"MQTT_PASSWORD"}},
+		&cli.StringFlag{
 			Name:  "t",
 			Value: "",
 			Usage: "mqtt topic to publish to.",
 		},
-		cli.IntFlag{
+		&cli.IntFlag{
 			Name:  "q",
 			Value: 0,
 			Usage: "QoS",
 		},
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:  "cafile",
 			Value: "",
 			Usage: "CA certificates",
 		},
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:  "cert",
 			Value: "",
 			Usage: "Client certificates",
 		},
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:  "key",
 			Value: "",
 			Usage: "Client private key",
 		},
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:  "i",
 			Value: "",
 			Usage: "ClientiId. Defaults random.",
 		},
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:  "m",
 			Value: "test message",
 			Usage: "Message body",
 		},
-		cli.BoolFlag{
+		&cli.BoolFlag{
 			Name:  "r",
 			Usage: "message should be retained.",
 		},
-		cli.BoolFlag{
+		&cli.BoolFlag{
 			Name:  "d",
 			Usage: "enable debug messages",
 		},
-		cli.BoolFlag{
+		&cli.BoolFlag{
 			Name:  "dd",
 			Usage: "enable debug messages",
 		},
-		cli.BoolFlag{
+		&cli.BoolFlag{
 			Name:  "ddd",
 			Usage: "enable debug messages",
 		},
-		cli.BoolFlag{
+		&cli.BoolFlag{
 			Name:  "dddd",
 			Usage: "enable debug messages",
 		},
-		cli.BoolFlag{
+		&cli.BoolFlag{
 			Name:  "ddddd",
 			Usage: "enable debug messages",
 		},
-		cli.BoolFlag{
+		&cli.BoolFlag{
 			Name:  "insecure",
 			Usage: "do not check that the server certificate",
 		},
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:   "conf",
 			Value:  "~/.mqttcli.cfg",
 			Usage:  "config file path",
-			EnvVar: "MQTTCLI_CONFPATH"},
-		cli.StringFlag{
+			EnvVars: []string{"MQTTCLI_CONFPATH"}},
+		&cli.StringFlag{
 			Name:  "will-payload",
 			Value: "",
 			Usage: "payload for the client Will",
 		},
-		cli.IntFlag{
+		&cli.IntFlag{
 			Name:  "will-qos",
 			Value: 0,
 			Usage: "QoS level for the client Will",
 		},
-		cli.BoolFlag{
+		&cli.BoolFlag{
 			Name:  "will-retain",
 			Usage: "if given, make the client Will retained",
 		},
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:  "will-topic",
 			Value: "",
 			Usage: "the topic on which to publish the client Will",
 		},
 	}
 	pubFlags := append(commonFlags,
-		cli.BoolFlag{
+		&cli.BoolFlag{
 			Name:  "s",
 			Usage: "read message from stdin, sending line by line as a message",
 		},
 	)
 	subFlags := append(commonFlags,
-		cli.BoolFlag{
+		&cli.BoolFlag{
 			Name:  "c",
 			Usage: "disable 'clean session'",
 		},
 	)
 	pubsubFlags := append(commonFlags,
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:  "pub",
 			Usage: "publish topic",
 		},
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:  "sub",
 			Usage: "subscribe topic",
 		},
 	)
 
-	app.Commands = []cli.Command{
+	app.Commands = []*cli.Command{
 		{
 			Name:   "pub",
 			Usage:  "publish",
