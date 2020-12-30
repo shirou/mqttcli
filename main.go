@@ -10,7 +10,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 	colorable "github.com/mattn/go-colorable"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 var usage = `
@@ -108,24 +108,24 @@ func main() {
 
 	commonFlags := []cli.Flag{
 		&cli.StringFlag{
-			Name:   "host",
-			Value:  "localhost",
-			Usage:  "mqtt host to connect to. Defaults to localhost",
+			Name:    "host",
+			Value:   "localhost",
+			Usage:   "mqtt host to connect to. Defaults to localhost",
 			EnvVars: []string{"MQTT_HOST"}},
 		&cli.IntFlag{
-			Name:   "p, port",
-			Value:  1883,
-			Usage:  "network port to connect to. Defaults to 1883",
+			Name:    "p, port",
+			Value:   1883,
+			Usage:   "network port to connect to. Defaults to 1883",
 			EnvVars: []string{"MQTT_PORT"}},
 		&cli.StringFlag{
-			Name:   "u,user",
-			Value:  "",
-			Usage:  "provide a username",
+			Name:    "u,user",
+			Value:   "",
+			Usage:   "provide a username",
 			EnvVars: []string{"MQTT_USERNAME"}},
 		&cli.StringFlag{
-			Name:   "P,password",
-			Value:  "",
-			Usage:  "provide a password",
+			Name:    "P,password",
+			Value:   "",
+			Usage:   "provide a password",
 			EnvVars: []string{"MQTT_PASSWORD"}},
 		&cli.StringFlag{
 			Name:  "t",
@@ -191,9 +191,9 @@ func main() {
 			Usage: "do not check that the server certificate",
 		},
 		&cli.StringFlag{
-			Name:   "conf",
-			Value:  "~/.mqttcli.cfg",
-			Usage:  "config file path",
+			Name:    "conf",
+			Value:   "~/.mqttcli.cfg",
+			Usage:   "config file path",
 			EnvVars: []string{"MQTTCLI_CONFPATH"}},
 		&cli.StringFlag{
 			Name:  "will-payload",

@@ -10,7 +10,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	MQTT "github.com/eclipse/paho.mqtt.golang"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 var MaxClientIdLen = 8
