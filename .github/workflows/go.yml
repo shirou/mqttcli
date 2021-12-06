@@ -32,3 +32,5 @@ jobs:
       run: go test -v ./... -coverprofile=coverage.out 
 
     - uses: codecov/codecov-action@v2
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
