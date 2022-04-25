@@ -103,15 +103,25 @@ func getRandomClientId() string {
 func NewOption(c *cli.Context) (*MQTT.ClientOptions, error) {
 	opts := MQTT.NewClientOptions()
 
-	host := c.String("host")
-	port := c.Int("p")
+	conf := c.String("conf")
 
-	if host == "" {
-		err := getSettingsFromFile(c.String("conf"), opts)
-		if err != nil {
+	defaultConf, exists := existsDefaultConfigFile()
+
+	if conf != DefaultConfigFilePath {
+		log.Debugf("reading from config file: %s", conf)
+		if err := getSettingsFromFile(conf, opts); err != nil {
+			return nil, err
+		}
+	} else if conf != "" && exists {
+		log.Debugf("reading from default config file: %s", defaultConf)
+		if err := getSettingsFromFile(defaultConf, opts); err != nil {
 			return nil, err
 		}
 	}
+
+	// override
+	host := c.String("host")
+	port := c.Int("p")
 
 	clientId := c.String("i")
 	if clientId == "" {
@@ -124,13 +134,16 @@ func NewOption(c *cli.Context) (*MQTT.ClientOptions, error) {
 	key := c.String("key")
 	cert := c.String("cert")
 	insecure := c.Bool("insecure")
-	tlsConfig, ok, err := makeTlsConfig(cafile, cert, key, insecure)
-	if err != nil {
-		return nil, err
-	}
-	if ok {
-		opts.SetTLSConfig(tlsConfig)
-		scheme = "ssl"
+	if cafile != "" || key != "" || cert != "" {
+		log.Debugf("reading from args")
+		tlsConfig, ok, err := makeTlsConfig(cafile, cert, key, insecure)
+		if err != nil {
+			return nil, err
+		}
+		if ok {
+			opts.SetTLSConfig(tlsConfig)
+			scheme = "ssl"
+		}
 	}
 
 	user := c.String("u")

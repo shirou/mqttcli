@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"path"
 	"runtime"
 	"strconv"
 	"strings"
@@ -15,7 +14,7 @@ import (
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 )
 
-const DefaultConfigFile = ".mqttcli.cfg" // Under HOME
+const DefaultConfigFilePath = "~/.mqttcli.cfg"
 
 type Config struct {
 	Host     string `json:"host"`
@@ -87,21 +86,17 @@ func UserHomeDir() string {
 	}
 	return os.Getenv("HOME")
 }
-func getSettingsFromFile(p string, opts *MQTT.ClientOptions) error {
-	confPath := ""
-	home := UserHomeDir()
-	// replace home to ~ in order to match
-	p = strings.Replace(p, home, "~", 1)
-	if p == "~/.mqttcli.cfg" || p == "" {
-		confPath = path.Join(home, DefaultConfigFile)
-		_, err := os.Stat(confPath)
-		if os.IsNotExist(err) {
-			return err
-		}
-	} else {
-		confPath = p
-	}
 
+func existsDefaultConfigFile() (string, bool) {
+	p := strings.Replace(DefaultConfigFilePath, "~", UserHomeDir(), 1)
+	if _, err := os.Stat(p); err == nil {
+		return p, true
+	} else {
+		return p, false
+	}
+}
+
+func getSettingsFromFile(confPath string, opts *MQTT.ClientOptions) error {
 	ret, err := readFromConfigFile(confPath)
 	if err != nil {
 		log.Error(err)

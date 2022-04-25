@@ -192,7 +192,7 @@ func main() {
 		},
 		&cli.StringFlag{
 			Name:    "conf",
-			Value:   "~/.mqttcli.cfg",
+			Value:   DefaultConfigFilePath,
 			Usage:   "config file path",
 			EnvVars: []string{"MQTTCLI_CONFPATH"}},
 		&cli.StringFlag{
