@@ -13,7 +13,7 @@ require (
 	github.com/onsi/gomega v1.10.4 // indirect
 	github.com/sirupsen/logrus v1.7.0 // indirect
 	github.com/stretchr/testify v1.6.1 // indirect
-	github.com/urfave/cli/v2 v2.4.8
+	github.com/urfave/cli/v2 v2.5.0
 	gopkg.in/airbrake/gobrake.v2 v2.0.9 // indirect
 	gopkg.in/gemnasium/logrus-airbrake-hook.v2 v2.1.2 // indirect
 )
