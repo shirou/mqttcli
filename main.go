@@ -106,16 +106,21 @@ func main() {
 	app.Usage = usage
 	app.Version = version
 
+	cli.HelpFlag = &cli.BoolFlag{
+		Name:  "help",
+		Usage: usage,
+	}
+
 	commonFlags := []cli.Flag{
 		&cli.StringFlag{
-			Name:    "host",
-			Value:   "localhost",
-			Usage:   "mqtt host to connect to. Defaults to localhost",
+			Name:    "h,host",
+			Value:   "",
+			Usage:   "mqtt host to connect to. Defaults is localhost",
 			EnvVars: []string{"MQTT_HOST"}},
 		&cli.IntFlag{
 			Name:    "p, port",
 			Value:   1883,
-			Usage:   "network port to connect to. Defaults to 1883",
+			Usage:   "network port to connect to. Defaults is 1883",
 			EnvVars: []string{"MQTT_PORT"}},
 		&cli.StringFlag{
 			Name:    "u,user",
