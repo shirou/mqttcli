@@ -30,7 +30,7 @@ func (m *MQTTClient) Connect() (MQTT.Client, error) {
 
 	m.Client = MQTT.NewClient(m.Opts)
 
-	log.Info("connecting...")
+	log.Infof("connecting...")
 
 	if token := m.Client.Connect(); token.Wait() && token.Error() != nil {
 		return nil, token.Error()
@@ -130,6 +130,10 @@ func NewOption(c *cli.Context) (*MQTT.ClientOptions, error) {
 	opts.SetClientID(clientId)
 
 	scheme := "tcp"
+	if port == 8883 {
+		scheme = "ssl"
+	}
+
 	cafile := c.String("cafile")
 	key := c.String("key")
 	cert := c.String("cert")
@@ -155,7 +159,10 @@ func NewOption(c *cli.Context) (*MQTT.ClientOptions, error) {
 		opts.SetPassword(password)
 	}
 
-	if host != "" {
+	if host == "" {
+		host = "localhost"
+	}
+	if len(opts.Servers) == 0 {
 		brokerUri := fmt.Sprintf("%s://%s:%d", scheme, host, port)
 		log.Infof("Broker URI: %s", brokerUri)
 

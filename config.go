@@ -120,7 +120,7 @@ func getSettingsFromFile(confPath string, opts *MQTT.ClientOptions) error {
 			scheme = "ssl"
 		}
 		brokerUri := fmt.Sprintf("%s://%s:%d", scheme, ret.Host, ret.Port)
-		log.Infof("Broker URI: %s", brokerUri)
+		log.Infof("Broker URI(from config): %s", brokerUri)
 		opts.AddBroker(brokerUri)
 	}
 
