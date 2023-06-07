@@ -4,10 +4,8 @@ go 1.15
 
 require (
 	github.com/Sirupsen/logrus v1.0.5
-	github.com/bitly/go-simplejson v0.5.0
-	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 // indirect
+	github.com/bitly/go-simplejson v0.5.1
 	github.com/eclipse/paho.mqtt.golang v1.4.2
-	github.com/kr/pretty v0.2.1 // indirect
 	github.com/mattn/go-colorable v0.1.13
 	github.com/onsi/ginkgo v1.14.2 // indirect
 	github.com/onsi/gomega v1.10.4 // indirect
