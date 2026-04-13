@@ -6,7 +6,7 @@ require (
 	github.com/Sirupsen/logrus v1.0.5
 	github.com/bitly/go-simplejson v0.5.1
 	github.com/eclipse/paho.mqtt.golang v1.4.3
-	github.com/mattn/go-colorable v0.1.13
+	github.com/mattn/go-colorable v0.1.14
 	github.com/onsi/ginkgo v1.14.2 // indirect
 	github.com/onsi/gomega v1.10.4 // indirect
 	github.com/sirupsen/logrus v1.7.0 // indirect
